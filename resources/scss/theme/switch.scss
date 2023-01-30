@@ -1,0 +1,24 @@
+.switch {
+    @apply flex items-center rounded-full w-8 h-5 bg-gray-300 border border-gray-300 cursor-pointer;
+
+    &--on {
+        @apply bg-primary-500 border-primary-500;
+
+        .switch__circle {
+            @apply shadow bg-white;
+            left: 13px;
+        }
+    }
+
+    &--danger {
+        &.switch--on {
+            @apply bg-danger-500 border-danger-500;
+        }
+    }
+
+    &__circle {
+        @apply w-4 h-4 shrink-0 rounded-full absolute top-1/2 left-0 bg-white shadow-lg;
+        transform: translateY(-50%);
+        transition: left .25s;
+    }
+}

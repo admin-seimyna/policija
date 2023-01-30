@@ -1,0 +1,23 @@
+.modal {
+    @apply w-full h-full fixed overflow-y-auto;
+    background-color: rgba(0,0,0,.3);
+
+    &.modal-enter-from,
+    &.modal-leave-to {
+        .modal-content {
+            @apply top-32 opacity-0;
+        }
+    }
+
+    &.modal-enter-to {
+        .modal-content {
+            @apply top-16;
+        }
+    }
+
+    &-content {
+        @apply w-full max-w-3xl top-16 left-1/2 flex flex-col bg-white rounded shadow-xl;
+        transform: translateX(-50%);
+        transition: top .2s, opacity .2s;
+    }
+}

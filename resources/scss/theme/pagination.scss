@@ -1,0 +1,14 @@
+.pagination {
+    &__page {
+        @apply w-9 h-9 rounded-md cursor-pointer hover:bg-primary-100 mr-1 text-xs;
+        @extend .flex-center;
+
+        &--current {
+            @apply bg-primary-500 cursor-default hover:bg-primary-500 text-white font-semibold;
+        }
+
+        &--disabled {
+            @apply opacity-50 pointer-events-none;
+        }
+    }
+}

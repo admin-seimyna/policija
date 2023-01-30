@@ -1,0 +1,48 @@
+.table {
+    @apply flex flex-col;
+
+    &__container {
+        @apply flex flex-col;
+    }
+
+    &__head,
+    &__body {
+        @apply flex flex-col w-full;
+    }
+
+    &__row {
+        @apply flex flex-1;
+    }
+
+    &__col {
+        @apply flex flex-1;
+    }
+
+    &--basic {
+        .table__container {
+            @apply mb-5;
+        }
+
+        .table__head {
+            @apply border-b-2 border-gray-300;
+
+            .table__col {
+                @apply font-semibold text-gray-500;
+            }
+        }
+
+        .table__body {
+            .table__row {
+                @apply border-b last:border-b-0 hover:bg-gray-100;
+            }
+        }
+
+
+        .table__body,
+        .table__head {
+            .table__col {
+                @apply px-3 py-2;
+            }
+        }
+    }
+}

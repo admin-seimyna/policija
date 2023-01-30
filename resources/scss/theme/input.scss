@@ -1,0 +1,49 @@
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  @apply bg-transparent h-full font-semibold w-full;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &::placeholder {
+    @apply font-thin;
+  }
+}
+
+.input {
+  @apply w-full flex flex-col;
+
+  &__wrapper {
+    @apply flex flex-col bg-white border rounded-md;
+  }
+
+  &__container {
+    @apply flex items-center h-input px-3;
+    transition: border-color .25s;
+  }
+
+  &--focus {
+    .input__wrapper {
+      @apply border-primary-500;
+    }
+
+    .input__append,
+    .input__prepend {
+      @apply text-primary-500;
+    }
+  }
+
+  &--error {
+    .input__wrapper {
+      @apply border-danger-500;
+    }
+
+    .input__append,
+    .input__prepend {
+      @apply text-danger-500;
+    }
+  }
+
+}

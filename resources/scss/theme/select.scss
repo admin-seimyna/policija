@@ -1,0 +1,38 @@
+.select {
+    @apply w-full flex flex-col;
+
+    &--error {
+        .select__wrapper {
+            @apply border-danger-500;
+        }
+    }
+
+    &--focus {
+        .select__wrapper {
+            @apply border-primary-500 rounded-t-md rounded-b-none;
+        }
+    }
+
+    &__wrapper {
+        @apply flex flex-col bg-white border rounded-md;
+    }
+
+    &__container {
+        @apply flex items-center h-input px-3;
+        transition: border-color .25s;
+
+        input {
+            @apply w-full h-full;
+        }
+    }
+
+    &__placeholder {
+        @apply font-thin text-gray-400;
+    }
+
+    &__content {
+        @apply absolute top-full left-0 w-full max-h-64 shadow-lg z-50 bg-white rounded-b-md overflow-y-auto;
+    }
+
+
+}

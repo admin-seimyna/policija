@@ -1,0 +1,32 @@
+.refresh {
+  @apply flex flex-col w-full max-h-full;
+
+  &--interacting {
+    .refresh__header {
+      transition: none;
+    }
+  }
+
+  &--active {
+    .refresh__header {
+      @apply h-14;
+    }
+  }
+
+  &--success {
+    .refresh__header {
+      @apply bg-success-500;
+    }
+  }
+
+  &--error {
+    .refresh__header {
+      @apply bg-danger-500;
+    }
+  }
+
+  &__header {
+    @apply flex items-center justify-center bg-gray-800 h-0 shrink-0 overflow-hidden shadow-lg z-10;
+    transition: height .35s, background-color .25s;
+  }
+}

@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$icons-font: 'seimyna';
+$font-family: 'Inter';
+
+@import 'bootstrap/reset';
+@import 'bootstrap/icons/styles.scss';
+@import 'theme/icon';
+
+@import 'theme/mixins';
+@import 'theme/typography';
+@import 'theme/helpers';
+@import 'theme/pagination';
+@import 'theme/modal';
+@import 'theme/spinner';
+@import 'theme/button';
+@import 'theme/input';
+@import 'theme/page';
+@import 'theme/splash';
+@import 'theme/option';
+@import 'theme/switch';
+@import 'theme/animated-icon';
+@import 'theme/refresh';
+@import 'theme/table';
+@import 'theme/select';
+@import 'theme/datepicker';
+
+@import 'theme/family';
