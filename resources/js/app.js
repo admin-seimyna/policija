@@ -13,7 +13,11 @@ createApp(App)
         config,
         constants,
         http: {
-            host: 'http://policija.test',
+            // host: 'http://policija.test', // home
+            host: 'http://test.test', // work
+        },
+        moment: {
+            timezone: 'Europe/Vilnius'
         },
         i18n: {
             locale: 'lt',

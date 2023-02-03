@@ -8,6 +8,7 @@ import Constants from '@/Utilities/Constants';
 import Bus from '@/Utilities/Bus';
 import 'moment/locale/lt';
 import moment from 'moment';
+require('moment-timezone');
 
 class App
 {
@@ -37,13 +38,16 @@ class App
             formatter: {},
             config: {},
             constants: {},
+            moment: {},
         }, options);
 
         const store = (new Store()).getStore();
         const i18n = (new Locale(this.options.i18n)).getI18n();
 
 
-        moment().locale(this.options.i18n.locale);
+        moment.tz.setDefault(this.options.moment.timezone);
+        moment.locale(this.options.i18n.locale);
+
         this.bus = new Bus();
         this.formatter = new Formatter(this.options.i18n.locale, this.options.formatter);
         this.http = new Http(this.options.http, store);

@@ -1,0 +1,10 @@
+.timepicker {
+  @apply flex items-center;
+  &__input {
+    @apply h-input w-16 flex-center border rounded hover:bg-gray-100 cursor-pointer my-1 font-semibold text-xl select-none;
+  }
+
+  &__arrow {
+    @apply w-16 h-10 flex-center cursor-pointer hover:bg-gray-100 rounded;
+  }
+}

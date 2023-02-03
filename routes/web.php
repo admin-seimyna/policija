@@ -43,6 +43,15 @@ Route::group(['prefix' => 'settings', 'name' => 'settings.'], function() {
         Route::get('payload', [\App\Http\Controllers\ShiftController::class, 'payload'])->name('payload');
         Route::get('pagination', [\App\Http\Controllers\ShiftController::class, 'pagination'])->name('pagination');
         Route::post('/',[\App\Http\Controllers\ShiftController::class, 'create'])->name('create');
-        Route::put('/{user}',[\App\Http\Controllers\ShiftController::class, 'update'])->name('update');
+        Route::put('/{shift}',[\App\Http\Controllers\ShiftController::class, 'update'])->name('update');
     });
+});
+
+// Reports
+Route::group(['prefix' => 'report', 'name' => 'report.'], function() {
+//        Route::get('list', [\App\Http\Controllers\ReportController::class, 'view'])->name('pagination');
+//        Route::get('payload', [\App\Http\Controllers\ReportController::class, 'payload'])->name('payload');
+    Route::get('pagination', [\App\Http\Controllers\ReportController::class, 'pagination'])->name('pagination');
+//        Route::post('/',[\App\Http\Controllers\ReportController::class, 'create'])->name('create');
+//        Route::put('/{report}',[\App\Http\Controllers\ReportController::class, 'update'])->name('update');
 });

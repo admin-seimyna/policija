@@ -9,5 +9,7 @@ return [
         'add' => 'Pridėti',
         'cancel' => 'Atšaukti',
         'save' => 'Išsaugoti',
+        'apply' => 'Pritaikyti',
+        'clear' => 'Išvalyti'
     ],
 ];

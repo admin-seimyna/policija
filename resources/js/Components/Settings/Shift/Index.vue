@@ -14,13 +14,16 @@
                     url="/settings/shift/pagination"
                     basic
             >
-                <template #name="{data}">
+                <template #title="{data}">
                     <span class="font-semibold">
                         {{ data }}
                     </span>
                 </template>
-                <template #time="{data}">
-                    Time...
+                <template #time_from="{data}">
+                    {{ data }}
+                </template>
+                <template #time_to="{data}">
+                    {{ data }}
                 </template>
                 <template #created_at="{data}">
                     {{ $app.formatter.date(data) }}
@@ -67,9 +70,11 @@ export default {
         return {
             columns: [
                 {
-                    name: 'name',
+                    name: 'title',
+                }, {
+                    name: 'time_from',
                 },{
-                    name: 'time',
+                    name: 'time_to',
                 },{
                     name: 'created_at'
                 }, {

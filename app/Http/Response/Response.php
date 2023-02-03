@@ -143,6 +143,7 @@ class Response
      */
     public function handle($callback = null): self
     {
+        $data = null;
         if (is_null($callback)) {
             if ($this->builder) {
                 if ($this->requestFilter) {
