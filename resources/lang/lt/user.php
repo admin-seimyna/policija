@@ -2,6 +2,11 @@
 return [
     'title' => [
         'create' => 'Naujas naudotojas',
-        'update' => 'Naudotojas'
+        'update' => 'Naudotojas',
+        'profile' => 'Profilis',
+    ],
+
+    'button' => [
+        'profile' => 'Profilis',
     ]
 ];

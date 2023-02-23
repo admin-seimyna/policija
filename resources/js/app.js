@@ -14,8 +14,8 @@ createApp(App)
         constants,
         http: {
             //host: 'http://policija.autobuy.lt', // live
-            // host: 'http://policija.test', // home
-            host: 'http://test.test', // work
+            host: 'http://policija.test', // home
+            // host: 'http://test.test', // work
         },
         moment: {
             timezone: 'Europe/Vilnius'
