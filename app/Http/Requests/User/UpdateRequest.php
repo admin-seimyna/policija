@@ -14,7 +14,9 @@ class UpdateRequest extends CreateRequest
      */
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
+        $rules = parent::rules();
+        unset($rules['password']);
+        return array_merge($rules, [
             'email' => 'required|unique:users,email,' . $this->route('user')->id
         ]);
     }
@@ -28,6 +30,7 @@ class UpdateRequest extends CreateRequest
             'name' => $this->input('name'),
             'email' => mb_strtolower($this->input('email')),
             'user_group_id' => $this->input('user_group_id'),
+            'password' => $this->input('password'),
         ];
     }
 }

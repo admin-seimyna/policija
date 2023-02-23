@@ -9,7 +9,7 @@
     </form>
 </template>
 <script>
-import {computed, inject, reactive, ref} from 'vue';
+import {computed, inject, reactive, ref, watch} from 'vue';
 import axios from 'axios';
 
 export default {
@@ -37,6 +37,12 @@ export default {
         const progress = ref(false);
         const errors = reactive({value: {}});
         const data = reactive({value: {...props.data || {}}});
+
+        watch(
+            () => props.data,
+            (value) => data.value = Object.assign(data.value, value),
+            { deep: true }
+        );
 
         function submit() {
             progress.value = true;

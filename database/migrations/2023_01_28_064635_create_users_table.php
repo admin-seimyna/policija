@@ -17,12 +17,13 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->enum('role', \App\Enum\RoleEnum::values()->toArray())->default(\App\Enum\RoleEnum::USER);
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email', 191);
             $table->timestamp('email_verified_at')->nullable();
-            $table->unsignedBigInteger('user_group_id');
+            $table->unsignedBigInteger('user_group_id')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('user_group_id')
                 ->references('id')

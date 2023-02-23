@@ -1,0 +1,37 @@
+.editor {
+  &__content {
+    strong {
+      @apply font-semibold;
+    }
+
+    em {
+      @apply italic;
+    }
+
+    ol {
+      list-style: decimal;
+    }
+
+    ul {
+      list-style: disc;
+    }
+
+    ol, ul {
+      margin-left: 30px;
+    }
+  }
+}
+
+.ProseMirror {
+  max-height: 400px;
+  min-height: 100px;
+  overflow-y: auto;
+
+  p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: theme('colors.gray.400');
+    pointer-events: none;
+    height: 0;
+  }
+}

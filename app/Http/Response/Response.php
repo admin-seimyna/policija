@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class Response
@@ -55,9 +56,14 @@ class Response
     protected array $policies = [];
 
     /**
-     * @var int|null
+     * @var string
      */
-    protected ?int $pagination = null;
+    protected string $getter = 'get';
+
+    /**
+     * @var int
+     */
+    protected int $limit = 20;
 
     /**
      * @param Request $request
@@ -110,7 +116,18 @@ class Response
      */
     public function setPagination(int $limit = 15): self
     {
-        $this->pagination = $limit;
+        $this->getter = 'paginate';
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+     * @param string $getter
+     * @return $this
+     */
+    public function setGetter(string $getter): self
+    {
+        $this->getter = $getter;
         return $this;
     }
 
@@ -156,7 +173,7 @@ class Response
                         $this->builder = $this->repository::$method($this->builder);
                     }
                 }
-                $data = $this->pagination ? $this->builder->paginate($this->pagination) : $this->builder->get();
+                $data = $this->builder->{$this->getter}($this->getter === 'paginate' ? $this->limit : null);
                 $data = $data->toArray();
 
                 if ($this->commit) {
@@ -187,10 +204,20 @@ class Response
     {
         $response = Gate::inspect($method, $arguments);
         if (!$response->allowed()) {
-            abort($response->code(), $response->message());
+            abort(403, '');
         }
 
         return $this;
+    }
+
+    /**
+     * @param string|null $permission
+     * @return $this
+     */
+    public function permission(?string $permission = null): self
+    {
+        if (!$permission) return $this;
+        return $this->authorize('permission', [Auth::user(), $permission]);
     }
 
     /**

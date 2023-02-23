@@ -23,7 +23,7 @@
         </div>
 
 
-        <div class="table__container"
+        <div class="table__container my-8"
              :class="{
                 'opacity-50': loading
              }"
@@ -32,12 +32,28 @@
                 <div class="table__row">
                     <div v-for="col in columns"
                          :key="col.name"
-                         :class="col.class"
+                         :class="[col.class, {
+                             'overflow-hidden': !col.overflow,
+                             'cursor-pointer': col.sortable
+                         }]"
                          class="table__col"
+                         :title="col.title || $t(`field.title.${col.name}`)"
+                         @click="sort(col)"
                     >
                         <slot :name="`head-${col.name}`">
-                            {{ col.titleDisabled ? '' : (col.title || $t(`field.title.${col.name}`)) }}
+                            <span class="ellipsis">
+                                {{ col.titleDisabled ? '' : (col.title || $t(`field.title.${col.name}`)) }}
+                            </span>
                         </slot>
+
+                        <i v-if="col.sortable"
+                           class="ml-auto"
+                           :class="{
+                                'icon-sort text-gray-300': !sortable[col.name],
+                                'icon-sort-desc text-gray-500': sortable[col.name] === 'asc',
+                                'icon-sort-asc text-gray-500': sortable[col.name] === 'desc',
+                           }"
+                        />
                     </div>
                 </div>
             </div>
@@ -56,11 +72,20 @@
                 >
                     <div v-for="col in columns"
                          :key="col.name"
-                         :class="col.class"
+                         :class="[col.class, {
+                             'overflow-hidden': !col.overflow,
+                         }]"
                          class="table__col"
                     >
-                        <slot :name="col.name" v-bind="{data: row[col.name], index}">
-                            {{ row[col.name] }}
+                        <slot :name="col.name"
+                              v-bind="{data: row[col.name], index, item: row}"
+                        >
+                            {{ col.overflow }}
+                            <span class="ellipsis"
+                                  :title="`${col.title || $t(`field.title.${col.name}`)}: ${row[col.name]}`"
+                            >
+                                {{ row[col.name] }}
+                            </span>
                         </slot>
                     </div>
                 </div>
@@ -80,7 +105,7 @@
 </template>
 <script>
 import Pagination from '@/Elements/Pagination';
-import {computed, ref} from 'vue';
+import {computed, onMounted, reactive, ref, watch} from 'vue';
 import axios from 'axios';
 import VSpinner from '@/Elements/Spinner';
 import {useStore} from 'vuex';
@@ -90,6 +115,7 @@ export default {
         VSpinner,
         Pagination
     },
+    emits: ['load'],
     props: {
         url: {
             type: String,
@@ -101,32 +127,57 @@ export default {
         },
         columns: Array,
         basic: Boolean,
+        filters: Array,
     },
-    setup(props) {
+    setup(props, { emit }) {
         const store = useStore();
         const page = ref(1);
         const loading = ref(false);
         const getter = computed(() => store.getters[props.pagination]);
+        const sortable = reactive({});
 
-        function load() {
+        watch(() => props.filters, load, {deep: true});
+
+        function load(emitCall = true) {
+            let url = `${props.url}?page=${page.value}`;
+            if (props.filters) {
+                url += `&filters=${JSON.stringify(props.filters)}&sort=${JSON.stringify(sortable)}`;
+            }
+
+            if (emitCall) {
+                emit('load');
+            }
             loading.value = true;
-            axios.get(`${props.url}?page=${page.value}`).then(() => {
+            axios.get(url).then(() => {
                 loading.value = false;
                 //todo: do something
             });
         }
 
-        load();
+        onMounted(load);
 
         return {
             page,
             loading,
+            sortable,
             data: computed(() => getter.value.data || []),
             total: computed(() => {
                 const total = Math.ceil(getter.value.total / getter.value.per_page);
                 return total || 1;
             }),
             load,
+            sort(col) {
+                if (!col.sortable) return;
+
+                if (!sortable[col.name]) {
+                    sortable[col.name] = 'asc';
+                } else if (sortable[col.name] === 'asc') {
+                    sortable[col.name] = 'desc';
+                } else {
+                    delete sortable[col.name];
+                }
+                load(false);
+            }
         }
     }
 }

@@ -1,7 +1,15 @@
 export default [
     {
+        path: '/login',
+        name: 'login',
+        meta: { public: true },
+        component: () => import('@/Components/Auth/Login/Index'),
+    },{
         path: '/',
         name: 'dashboard',
+        meta: {
+            payload: '/dashboard/payload',
+        },
         component: () => import('@/Components/Dashboard/Index'),
     }, {
         path: '/settings',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\UserReportScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,8 +23,18 @@ class Report extends Model
         'unprocessed_events_count',
         'date',
         'comment',
-        'shift_id'
+        'shift_id',
+        'user_id'
     ];
+
+    /**
+     *
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new UserReportScope());
+    }
 
     /**
      * @return BelongsTo

@@ -8,6 +8,7 @@ class PermissionActionEnum extends Enum
     const EDIT_ACTION = 'edit';
     const DELETE_ACTION = 'delete';
     const VIEW_ACTION = 'view';
+    const LIST_ACTION = 'list';
 
     /**
      * @return array
@@ -15,6 +16,7 @@ class PermissionActionEnum extends Enum
     public static function sorted(): array
     {
         $sort = [
+            static::LIST_ACTION,
             static::VIEW_ACTION,
             static::CREATE_ACTION,
             static::EDIT_ACTION,

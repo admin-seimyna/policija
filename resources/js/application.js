@@ -8,6 +8,7 @@ import Constants from '@/Utilities/Constants';
 import Bus from '@/Utilities/Bus';
 import 'moment/locale/lt';
 import moment from 'moment';
+import Permission from '@/Utilities/Permission';
 require('moment-timezone');
 
 class App
@@ -20,6 +21,7 @@ class App
     config; // Application config
     constant; // Application constants
     bus; // Event listener
+    permission; // Permissions
 
     constructor(app, options) {
         this.app = app;
@@ -53,6 +55,7 @@ class App
         this.http = new Http(this.options.http, store);
         this.config = new Config(this.options.config);
         this.constant = new Constants(this.options.constants, i18n.global.t);
+        this.permission = new Permission(this.options.permission, store);
         this.app.use((new Router(this.options.routes, store, this.bus)).getRouter());
         this.app.use(store);
         this.app.use(i18n);

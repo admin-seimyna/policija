@@ -15,7 +15,7 @@
     }
 
     &__col {
-        @apply flex flex-1;
+        @apply flex flex-1 items-center;
     }
 
     &--basic {
@@ -27,7 +27,7 @@
             @apply border-b-2 border-gray-300;
 
             .table__col {
-                @apply font-semibold text-gray-500;
+                @apply font-semibold text-gray-500 text-xs;
             }
         }
 

@@ -5,6 +5,7 @@ namespace App\Http\Requests\UserGroup;
 use App\Enum\PermissionActionEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 
 class CreateRequest extends FormRequest
 {
@@ -16,7 +17,7 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|unique:user_groups',
+            'title' => ['required', Rule::unique('user_groups')->whereNull('deleted_at')],
             'permissions' => 'array',
             'permissions.*.name' => 'in:' . implode(',', array_keys(config('permission.permissions'))),
             'permissions.*.permissions' => 'required|array',

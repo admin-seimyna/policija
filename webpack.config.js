@@ -33,9 +33,10 @@ module.exports = {
                 use: [
                     'vue-loader',
                 ],
-            },{
+            }, {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                include: /node_modules/,
+                resolve: { fullySpecified: false },
                 loader: 'babel-loader',
                 options: {
                     presets: ['@babel/preset-env'],

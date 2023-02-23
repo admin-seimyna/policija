@@ -3,6 +3,7 @@
 namespace App\Http\Requests\UserGroup;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends CreateRequest
 {
@@ -14,7 +15,10 @@ class UpdateRequest extends CreateRequest
     public function rules(): array
     {
         return array_merge(parent::rules(), [
-            'title' => 'required|unique:user_groups,id,' . $this->route('userGroup')->id,
+            'title' => [
+                'required',
+                Rule::unique('user_groups')->ignore($this->route('userGroup')->id)->whereNull('deleted_at')
+            ],
         ]);
     }
 }

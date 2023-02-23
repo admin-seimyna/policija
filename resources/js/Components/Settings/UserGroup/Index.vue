@@ -1,7 +1,8 @@
 <template>
     <Page>
         <template #action>
-            <VButton primary
+            <VButton v-if="$app.permission.has('user-group.create')"
+                     warning
                      shadow
                      @click="createGroup"
             >
@@ -23,12 +24,11 @@
                 <template #created_at="{data}">
                     {{ $app.formatter.date(data) }}
                 </template>
-                <template #actions="{index}">
-                    <div class="w-5 h-5 cursor-pointer flex-center"
-                         @click="edit(index)"
-                    >
-                        <i class="icon-pencil" />
-                    </div>
+                <template #actions="{index, item}">
+                    <CrudContextMenu :delete-url="`/settings/user-group/${item.id}`"
+                                     permission="user-group"
+                                     @edit="edit(index)"
+                    />
                 </template>
             </VTable>
         </div>
@@ -41,10 +41,11 @@ import VTable from '@/Elements/Table';
 import {inject} from 'vue';
 import UserGroupForm from '@/Components/Settings/UserGroup/Form';
 import {useStore} from 'vuex';
+import CrudContextMenu from '@/Elements/Crud/ContextMenu';
 
 export default {
     name: 'UserGroups',
-    components: {VTable, VButton, Page},
+    components: {CrudContextMenu, VTable, VButton, Page},
     setup(props) {
         const app = inject('app');
         const store = useStore();
@@ -67,6 +68,7 @@ export default {
                 }, {
                     name: 'actions',
                     titleDisabled: true,
+                    overflow: true,
                     class: 'max-w-16'
                 }
             ],

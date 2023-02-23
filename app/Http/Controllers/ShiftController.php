@@ -10,6 +10,7 @@ use App\Models\Shift;
 use App\Repository\ShiftRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShiftController extends Controller
 {
@@ -20,6 +21,7 @@ class ShiftController extends Controller
     public function pagination(Request $request): JsonResponse
     {
         return Response::create()
+            ->permission('shift.list')
             ->setRequest($request)
             ->setQuery(Shift::query())
             ->setRepository(ShiftRepository::class, 'pagination')
@@ -36,6 +38,7 @@ class ShiftController extends Controller
     public function create(CreateRequest $request): JsonResponse
     {
         return Response::create()
+            ->permission('shift.create')
             ->setRequest($request)
             ->handle(CreateResponse::class)
             ->json();
@@ -49,6 +52,7 @@ class ShiftController extends Controller
     public function update(Shift $shift, UpdateRequest $request): JsonResponse
     {
         return Response::create()
+            ->permission('shift.edit')
             ->setRequest($request)
             ->handle(function (Response $response) use ($shift) {
                 $shift->update($response->request->getData());
@@ -57,6 +61,22 @@ class ShiftController extends Controller
                 ];
             })
             ->json();
+    }
+
+    /**
+     * @param Shift $shift
+     * @return JsonResponse
+     */
+    public function destroy(Shift $shift): JsonResponse
+    {
+        return Response::create()
+            ->permission('shift.delete')
+                ->handle(function (Response $response) use ($shift) {
+                    $shift->delete();
+                    return [
+                        'shift/removeFromPagination' => $shift->toArray()
+                    ];
+                })->json();
     }
 
 }

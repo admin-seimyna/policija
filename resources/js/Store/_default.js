@@ -53,6 +53,10 @@ export default {
         addToPagination(state, value) {
             state.pagination.data.push(value);
         },
+        removeFromPagination(state, value) {
+            const index = state.pagination.data.findIndex(item => item.id === value.id);
+            state.pagination.data.splice(index, 1);
+        },
         prependToPagination(state, value) {
             state.pagination.data.unshift(value);
         },

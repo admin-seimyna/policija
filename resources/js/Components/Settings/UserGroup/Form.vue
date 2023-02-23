@@ -24,33 +24,44 @@
                     </div>
                 </div>
 
-                <div v-for="(group, groupIndex) in permissions"
-                     :key="`permission-group-${group.name}`"
+                <div v-for="(permissionsGroup, groupIndex) in permissions"
+                     :key="`permission-group-${permissionsGroup.name}`"
                      class="flex flex-1 py-4 hover:bg-gray-100"
                 >
                     <input type="hidden"
                            :name="`permissions[${groupIndex}][name]`"
-                           :value="group.name"
+                           :value="permissionsGroup.name"
                     />
                     <div class="flex w-1/3 px-2">
                         <span class="ellipsis font-semibold text-xs">
-                            {{ $t(`permission.title.group.${group.name}`) }}
+                            {{ $t(`permission.title.group.${permissionsGroup.name}`) }}
                         </span>
                     </div>
 
-                    <div v-for="(permission, index) in group.permissions"
+                    <div v-for="(permission, index) in permissionsGroup.permissions"
                          :key="`${permission}-${index}`"
                          class="flex flex-1"
                     >
-                        <input type="hidden"
-                               :name="`permissions[${groupIndex}][permissions][${index}][name]`"
-                               :value="permission.name"
-                        />
-                        <Switch disable-title
-                                :value="getValue(group.name, permission.name)"
-                                :name="`permissions[${groupIndex}][permissions][${index}][value]`"
-                                :danger="permission.name === 'delete'"
-                        />
+                        <template v-if="!permission.skip">
+                            <input type="hidden"
+                                   :name="`permissions[${groupIndex}][permissions][${index}][name]`"
+                                   :value="permission.name"
+                            />
+                            <Popper hover
+                                    :content="permission.tooltip"
+                                    offset-distance="0"
+                                    open-delay="300"
+                                    class="tooltip"
+                            >
+                                <Switch disable-title
+                                        :class="{ 'opacity-50': permissionsGroup.disabled }"
+                                        :disabled="permissionsGroup.disabled"
+                                        v-model="group.mapped_permissions[permissionsGroup.name][permission.name]"
+                                        :name="`permissions[${groupIndex}][permissions][${index}][value]`"
+                                        :danger="permission.name === 'delete'"
+                                />
+                            </Popper>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -64,41 +75,76 @@ import {computed} from 'vue';
 import {useI18n} from 'vue-i18n';
 import {useStore} from 'vuex';
 import Switch from '@/Elements/Switch';
+import Popper from 'vue3-popper';
+
 export default {
     name: 'UserGroupForm',
-    components: {Switch, VInput, CrudForm},
+    components: {Switch, VInput, CrudForm, Popper},
     props: {
         group: Object,
     },
     setup(props, {emit}){
-        const t = useI18n().t;
+        const { t, te } = useI18n();
         const store = useStore();
         const actions = computed(() => store.getters['permission/actions']);
+        const permissions = computed(() => store.getters['permission/list']);
+
+        if (!props.group.id) {
+            props.group.mapped_permissions = {};
+            Object.keys(permissions.value).forEach((key) => {
+                props.group.mapped_permissions[key] = {};
+                permissions.value[key].actions.forEach((action) => {
+                    props.group.mapped_permissions[key][action] = 0;
+                });
+            });
+        }
+
+        function checkHasPermissions(permissions) {
+            for(const key in permissions) {
+                for(const action of permissions[key]) {
+                    if (!props.group.mapped_permissions[key][action]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
 
         return {
             emit,
             actions,
             permissions: computed(() => {
-                const permissions = [];
-                const list = store.getters['permission/list'];
-                Object.keys(list).forEach((key) => {
-                    permissions.push({
+                const data = [];
+                Object.keys(permissions.value).forEach((key) => {
+                    let disabled = false;
+                    if (permissions.value[key].require) {
+                        disabled = !checkHasPermissions(permissions.value[key].require);
+                    }
+                    data.push({
                         name: key,
-                        permissions: [...actions.value].map((action) => {
-                            return {
-                                name: action,
-                                value: 0
-                            }
-                        })
+                        disabled,
+                        permissions: [...actions.value]
+                            .map((action) => {
+                                if (permissions.value[key].actions.indexOf(action) === -1) {
+                                    return { skip: true };
+                                }
+                                const translationKey = `permission.message.${key}.${action}`;
+                                let tooltip = null;
+                                if (disabled) {
+                                    tooltip = t('permission.message.blocked_by_other_permission');
+                                } else {
+                                    tooltip = te(translationKey) ? t(translationKey) : null;
+                                }
+                                return {
+                                    name: action,
+                                    value: 0,
+                                    tooltip,
+                                }
+                            })
                     })
                 });
-                return permissions;
+                return data;
             }),
-
-            getValue(groupName, permissionName) {
-                if (!props.group.id) return 0;
-                return parseInt(props.group.mapped_permissions[groupName][permissionName]);
-            },
 
             title: computed(() => {
                 return props.group ? t('user-group.title.create') : t('user-group.title.update');

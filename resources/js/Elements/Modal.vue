@@ -8,7 +8,7 @@
             <div v-if="modal.value.active"
                  ref="modalRef"
                  class="modal"
-                 :class="[modal.value.zIndex]"
+                 :class="[modal.value.zIndex, modal.value.options.class]"
                  :style="{
                      'transition-duration': transitionDuration
                  }"
@@ -19,6 +19,7 @@
                                ref="componentRef"
                                v-bind="modal.value.props"
                                @close="close(index)"
+                               @true=onTrue(index)
                     />
                 </div>
             </div>
@@ -27,6 +28,7 @@
 </template>
 <script>
 import {computed, inject, onBeforeUnmount, reactive, ref} from 'vue';
+import Prompt from '@/Elements/Modal/Prompt';
 
 export default {
     name: 'Modal',
@@ -62,6 +64,23 @@ export default {
             });
         }
 
+        function prompt(title, message, action) {
+            return new Promise((resolve, reject) => {
+                open({
+                    component: Prompt,
+                    props: {
+                        title,
+                        message,
+                        action
+                    },
+                    options: {
+                        class: 'modal--prompt'
+                    },
+                    onTrue: resolve,
+                });
+            });
+        }
+
         function close(index) {
             const modal = modals[index];
             if (!modal) {
@@ -77,7 +96,16 @@ export default {
             }, props.transition);
         }
 
+        function onTrue(index) {
+            modals[index].value.onTrue();
+            close(index);
+        }
+
         app.register('modal', open).then((options) => {
+            // do something if you want
+        });
+
+        app.register('prompt', prompt).then((options) => {
             // do something if you want
         });
 
@@ -94,6 +122,7 @@ export default {
             modalRef,
             modals,
             close,
+            onTrue,
             transitionDuration: computed(() => {
                 return `${props.transition / 1000}s`;
             }),

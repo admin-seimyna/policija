@@ -11,6 +11,7 @@ use App\Models\UserGroup;
 use App\Repository\UserGroupRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserGroupController extends Controller
 {
@@ -20,6 +21,7 @@ class UserGroupController extends Controller
     public function payload(): JsonResponse
     {
         return Response::create()
+            ->permission('user-group.list')
             ->handle(function (Response $response) {
                 return [
                     'permission/actions' => PermissionActionEnum::sorted(),
@@ -35,6 +37,7 @@ class UserGroupController extends Controller
     public function pagination(Request $request): JsonResponse
     {
         return Response::create()
+            ->permission('user-group.list')
             ->setRequest($request)
             ->setQuery(UserGroup::query())
             ->setRepository(UserGroupRepository::class, 'pagination')
@@ -51,6 +54,7 @@ class UserGroupController extends Controller
     public function create(CreateRequest $request): JsonResponse
     {
         return Response::create()
+            ->permission('user-group.create')
             ->setRequest($request)
             ->handle(CreateResponse::class)
             ->json();
@@ -64,6 +68,7 @@ class UserGroupController extends Controller
     public function update(UserGroup $userGroup, UpdateRequest $request): JsonResponse
     {
         return Response::create()
+            ->permission('user-group.edit')
             ->setRequest($request)
             ->handle(function(Response $response) use ($userGroup, $request) {
                 $userGroup->update($request->getData());
@@ -78,5 +83,21 @@ class UserGroupController extends Controller
                 ];
             })
             ->json();
+    }
+
+    /**
+     * @param UserGroup $userGroup
+     * @return JsonResponse
+     */
+    public function destroy(UserGroup $userGroup): JsonResponse
+    {
+        return Response::create()
+            ->permission('user-group.delete')
+            ->handle(function (Response $response) use ($userGroup) {
+                $userGroup->delete();
+                return [
+                    'user_group/removeFromPagination' => $userGroup->toArray()
+                ];
+            })->json();
     }
 }

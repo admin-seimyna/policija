@@ -7,7 +7,8 @@
          }"
     >
         <div class="select__wrapper">
-            <label :for="name"
+            <label v-if="!disableTitle"
+                   :for="name"
                    class="text-xs font-semibold mt-2 ml-3 text-text-light"
             >
                 {{ label }}
@@ -104,7 +105,7 @@ export default {
     props: {
         ...fieldProps,
         modelValue: [String, Number, Array],
-        options: Array,
+        payload: Array,
         grouped: Boolean,
         multiple: Boolean,
         filter: {
@@ -114,7 +115,7 @@ export default {
             }
         },
     },
-    emits: ['change'],
+    emits: ['change', 'modelValue:update'],
     setup(props, { emit }) {
         const t = useI18n().t;
         const isOpen = ref(false);
@@ -123,10 +124,11 @@ export default {
         const selectRef = ref(null);
         const selected = reactive([]);
         const selectedOptions = reactive([]);
+
         const mappedOptions = computed(() => {
             return (!props.grouped
-                ? [{name: 'default', options: [...props.options]}]
-                : [...props.options]
+                ? [{name: 'default', options: [...props.payload]}]
+                : [...props.payload]
             ).map(group => {
                 return Object.assign({ ...group }, {
                     _id: `group-${props.valueKey}`,
@@ -152,7 +154,6 @@ export default {
                         });
                 });
             });
-
             emit('change', selectedOptions);
         }
 
@@ -227,6 +228,8 @@ export default {
                     selectedOptions.push(option);
                 }
 
+                const values = selectedOptions.map(option => option[props.valueKey]);
+                emit('update:modelValue', props.multiple ? values : values[0]);
                 emit('change', selectedOptions);
 
                 if (!props.multiple) {

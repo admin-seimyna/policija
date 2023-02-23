@@ -103,7 +103,7 @@
 
     &--warning {
         &:not(.button--bordered) {
-            @apply bg-warning-500 shadow-warning-300;
+            @apply bg-warning-500 shadow-warning-200;
         }
 
         &.button--bordered {
@@ -115,12 +115,16 @@
         }
 
         &.button--shadow {
-            @apply shadow-warning-300;
+            @apply shadow-warning-200;
         }
     }
 
     &--danger {
         @apply bg-danger-500;
+
+        &:hover {
+            @apply bg-danger-400 shadow-danger-400;
+        }
 
         &.button--bordered {
             @apply hover:bg-danger-50 border-danger-500 text-danger-500;

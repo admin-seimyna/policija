@@ -12,7 +12,14 @@
             </div>
         </div>
         <div class="w-full mt-8">
-            <slot />
+            <transition name="fade">
+                <div v-if="loading"
+                     class="absolute top-0 left-0 w-full h-full bg-gray-100 flex-center z-50"
+                >
+                    <VSpinner class="w-10 h-10" />
+                </div>
+            </transition>
+            <slot v-if="!loading" />
         </div>
     </div>
 </template>
@@ -20,13 +27,18 @@
 import {useRoute} from 'vue-router';
 import {computed} from 'vue';
 import {useI18n} from 'vue-i18n';
+import {useStore} from 'vuex';
+import VSpinner from '@/Elements/Spinner';
 
 export default {
     name: 'Page',
+    components: {VSpinner},
     setup(props) {
         const route = useRoute();
+        const store = useStore();
         const t = useI18n().t;
         return {
+            loading: computed(() => store.getters['app/loading']),
             title: computed(() => {
                 return t(`page.title.${route.name}`);
             })

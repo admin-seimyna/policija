@@ -20,6 +20,13 @@ return [
         'comment' => 'Komentaras',
         'date' => 'Data',
         'user_id' => 'Naudotojas',
+        'shift_id' => 'Pamaina',
+        'shift' => 'Pamaina',
+        'user' => 'Naudotojas',
+        'password' => 'Slaptažodis',
+        'role' => [
+            'owner' => 'Suteikti naudotojui visas teises',
+        ]
     ],
     'placeholder' => [
         'insert' => 'Įveskite...',

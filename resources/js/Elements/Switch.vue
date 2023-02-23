@@ -35,6 +35,7 @@ export default {
         modelValue: [Number, Boolean],
         value: [Number, Boolean],
         danger: Boolean,
+        disabled: Boolean,
         trueValue: {
             type: [Number, Boolean],
             default: 1,
@@ -44,6 +45,7 @@ export default {
             default: 0,
         }
     },
+    emits: ['update:modelValue'],
     setup(props, { emit }) {
         const inputValue = ref(props.value ? !!props.value : !!props.modelValue);
 
@@ -65,6 +67,7 @@ export default {
             inputValue,
             ...useField(props),
             toggle() {
+                if (props.disabled) return;
                 inputValue.value = !inputValue.value;
             }
         }

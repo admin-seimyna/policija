@@ -18,7 +18,12 @@ class CreateResponse extends Response
      */
     public function __construct(CreateRequest $request)
     {
-        $this->user = User::create($request->getData());
+        $data = $request->getData();
+        $this->user = User::create($data);
+        if (isset($data['role'])) {
+            $this->user->role = $data['role'];
+            $this->user->update();
+        }
     }
 
     /**

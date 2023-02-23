@@ -1,4 +1,4 @@
-import {computed} from 'vue';
+import {computed, ref} from 'vue';
 import {useI18n} from 'vue-i18n';
 
 const fieldProps = {
@@ -15,6 +15,7 @@ const fieldProps = {
     errors: Object,
     title: String,
     disableTitle: Boolean,
+    placeholder: [String, Number]
 };
 
 const useField = (props) => {
@@ -41,7 +42,7 @@ const useField = (props) => {
             return !!errorMessage.value;
         }),
         placeholder: computed(() => {
-            return `${props.placeholder || t('field.placeholder.insert')}`;
+            return `${typeof props.placeholder !== 'undefined' ? props.placeholder : t('field.placeholder.insert')}`;
         }),
     }
 }

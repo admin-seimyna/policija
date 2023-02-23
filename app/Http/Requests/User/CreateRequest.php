@@ -3,7 +3,9 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class CreateRequest extends FormRequest
 {
@@ -14,11 +16,22 @@ class CreateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'user_group_id' => 'required|exists:user_groups,id'
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->whereNull('deleted_at')
+            ],
+            'user_group_id' => 'required|exists:user_groups,id',
+            'password' => 'required',
         ];
+
+        if (Auth::user()->isOwner) {
+            $rules['user_group_id'] = 'required_if:role,null|exists:user_groups,id';
+        }
+
+        return $rules;
     }
 
     /**
@@ -26,11 +39,16 @@ class CreateRequest extends FormRequest
      */
     public function getData(): array
     {
-        return [
+        $data = [
             'name' => $this->input('name'),
             'email' => mb_strtolower($this->input('email')),
             'user_group_id' => $this->input('user_group_id'),
-            'password' => Hash::make(uniqid()),
+            'password' => $this->input('password', uniqid()),
         ];
+
+        if (Auth::user()->isOwner) {
+            $data['role'] = $this->input('role', null);
+        }
+        return $data;
     }
 }

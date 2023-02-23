@@ -62,7 +62,7 @@
     </div>
 </template>
 <script>
-import {reactive, onMounted, computed} from 'vue';
+import {reactive, onMounted, computed, inject} from 'vue';
 import { useRoute } from 'vue-router';
 import {useI18n} from 'vue-i18n';
 import SidebarLink from '@/Components/Layout/SidebarLink';
@@ -73,27 +73,38 @@ export default {
     setup(props) {
         const route = useRoute();
         const t = useI18n().t;
+        const app = inject('app');
         const links = reactive([
             {
                 name: 'dashboard',
                 icon: 'icon-graph-bar',
             }, {
                 name: 'settings',
+                permission: 'settings.list',
                 title: t('page.title.settings.title'),
                 icon: 'icon-cog',
                 children: [
                     {
-                        name: 'settings.user-group.list'
+                        name: 'settings.user-group.list',
+                        permission: 'user-group.list',
                     },{
-                        name: 'settings.user.list'
+                        name: 'settings.user.list',
+                        permission: 'user.list',
                     }, {
-                        name: 'settings.shift.list'
+                        name: 'settings.shift.list',
+                        permission: 'shift.list',
                     }
                 ]
             }
         ]);
 
         function mapLink(link) {
+            if (link.permission) {
+                if (!app.permission.has(link.permission)) {
+                    return null;
+                }
+            }
+
             link.active = route.name === link.name;
             link.title = link.title || t(`page.title.${link.name}`);
             link.expanded = false;
@@ -109,11 +120,13 @@ export default {
             links: computed(() => {
                 return links.map((link) => {
                     link = mapLink(link);
+                    if (!link) return null;
                     if (link.children) {
-                        link.children = link.children.map(mapLink);
+                        link.children = link.children.map(mapLink)
+                            .filter(item => item);
                     }
                     return link;
-                });
+                }).filter(item => item);
             }),
 
             expand(link) {

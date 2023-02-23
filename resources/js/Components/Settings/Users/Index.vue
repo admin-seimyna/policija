@@ -1,7 +1,8 @@
 <template>
     <Page>
         <template #action>
-            <VButton primary
+            <VButton v-if="$app.permission.has('user.create')"
+                     warning
                      shadow
                      @click="createUser"
             >
@@ -20,17 +21,17 @@
                     </span>
                 </template>
                 <template #user_group="{data}">
-                    {{ data.title }}
+                    {{ data ? data.title : 'Nenurodyta' }}
                 </template>
                 <template #created_at="{data}">
                     {{ $app.formatter.date(data) }}
                 </template>
-                <template #actions="{index}">
-                    <div class="w-5 h-5 cursor-pointer flex-center">
-                        <i class="icon-pencil"
-                           @click="edit(index)"
-                        />
-                    </div>
+                <template #actions="{index, item}">
+                    <CrudContextMenu
+                        :delete-url="`/settings/user/${item.id}`"
+                        permission="user"
+                        @edit="edit(index)"
+                    />
                 </template>
             </VTable>
         </div>
@@ -43,10 +44,12 @@ import VButton from '@/Elements/Button';
 import { inject} from 'vue';
 import UserForm from '@/Components/Settings/Users/Form';
 import { useStore } from 'vuex';
+import CrudContextMenu from '@/Elements/Crud/ContextMenu';
 
 export default {
     name: 'Users',
     components: {
+        CrudContextMenu,
         VButton,
         VTable,
         Page
@@ -77,6 +80,7 @@ export default {
                 }, {
                     name: 'actions',
                     titleDisabled: true,
+                    overflow: true,
                     class: 'max-w-16'
                 }
             ],

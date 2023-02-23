@@ -2,6 +2,7 @@
     <div class="w-full">
         <Popper class="popper w-full"
                 @close:popper="onClose"
+                @open:popper="onOpen"
         >
             <div class="input"
                  :class="{
@@ -17,9 +18,12 @@
                     </label>
 
                     <div class="input__container w-full cursor-pointer">
-                        <span class="font-semibold">
-                            {{ output }}
-                        </span>
+                        <span :class="{
+                                'font-semibold': valueOutput,
+                                'text-gray-500': !valueOutput,
+                              }"
+                              v-html="output"
+                        />
                     </div>
 
                     <input type="hidden"
@@ -31,7 +35,7 @@
 
 
             <template #content="{close}">
-                <div class="flex flex-col bg-white p-3 rounded-md">
+                <div class="flex flex-col bg-white border shadow-lg p-3 rounded-md">
                     <div class="flex">
                         <Calendar v-model="range.dates"
                                   v-model:activeDate="activeDate"
@@ -116,6 +120,7 @@ export default {
                 range.dates = moment(props.modelValue);
                 range.time = moment(props.modelValue);
             }
+            setValue();
         } else {
             const now = moment();
             range.dates = now;
@@ -136,6 +141,10 @@ export default {
                     }))
                 });
             } else {
+                if (!range.dates) {
+                    inputValue.value = null;
+                    return;
+                }
                 inputValue.value = range.dates.clone().set({
                     hour: range.time.get('hour'),
                     minute: range.time.get('minutes')
@@ -146,13 +155,19 @@ export default {
         watch(
             () => range.dates,
             (value, oldValue) => {
+                if (!value) {
+                    range.dates = props.rangeSelect ? [] : null;
+                    range.time = props.rangeSelect ? [] : null;
+                    return;
+                }
                 const index = props.rangeSelect ? range.dates.findIndex((date, index) => date.format('YYYY-MM-DD') !== oldValue[index].format('YYYY-MM-DD')) : range.dates;
                 range.dates[index] = value[index];
             }
         )
 
+        const field = useField(props);
         return {
-            ...useField(props),
+            ...field,
             focused,
             range,
             activeDate,
@@ -160,7 +175,7 @@ export default {
                 if (props.rangeSelect) {
 
                 }
-                return inputValue.value ? inputValue.value.format(format.value) : null;
+                return inputValue.value ? inputValue.value.format(format.value) : field.placeholder.value;
             }),
             valueOutput: computed(() => {
                 if (props.rangeSelect) {
@@ -182,9 +197,14 @@ export default {
                 }
             },
 
+            onOpen() {
+                focused.value = true;
+            },
+
             onClose() {
                 range.dates = inputValue.value || moment();
                 range.time = inputValue.value || moment();
+                focused.value = false;
             }
         }
     }

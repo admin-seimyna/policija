@@ -3,7 +3,7 @@
            :method="method"
            class="p-8"
            :data="data"
-           @success="emit('close')"
+           @success="onSuccess"
     >
         <template #default="{data,progress,errors}">
             <div class="flex items-center mb-8">
@@ -55,7 +55,7 @@ export default {
     props: {
         data: Object,
         action: String,
-        title: String
+        title: String,
     },
     setup(props, { emit }) {
         return {
@@ -68,6 +68,11 @@ export default {
             method: computed(() => {
                 return props.data.id ? 'put' : 'post';
             }),
+
+            onSuccess() {
+                emit('success');
+                emit('close');
+            }
         };
     },
 }
