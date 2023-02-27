@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportsExport;
 use App\Http\Filters\ReportFilter;
 use App\Http\Requests\Report\CreateRequest;
 use App\Http\Requests\Report\UpdateRequest;
@@ -12,6 +13,8 @@ use App\Repository\ReportRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ReportController extends Controller
 {
@@ -95,5 +98,14 @@ class ReportController extends Controller
                 ];
             })
             ->json();
+    }
+
+    /**
+     * @param Request $request
+     * @return BinaryFileResponse
+     */
+    public function export(Request $request): BinaryFileResponse
+    {
+        return Excel::download(new ReportsExport, 'ataskaita.xlsx');
     }
 }

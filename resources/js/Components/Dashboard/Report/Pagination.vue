@@ -6,13 +6,32 @@
         />
 
         <VTable pagination="report/pagination"
+                export-url="/report/export"
                 :columns="columns"
                 :filters="selectedFilters.values"
                 url="/report/pagination"
                 basic
                 @load="reloadStatistics"
         >
+            <template #date="{data, item}">
+                <div class="flex-center w-7">
+                    <Popper v-if="item.comment"
+                            class="tooltip"
+                    >
+                        <i class="icon-comment text-warning-500 cursor-pointer" />
+                        <template #content>
+                            <div v-html="item.comment"
+                                 class="editor-output text-xs"
+                            />
+                        </template>
+                    </Popper>
+                </div>
+                <span class="ellipsis">
+                    {{ data }}
+                </span>
+            </template>
             <template #user="{data}">
+
                 <span class="font-semibold ellipsis"
                       :title="data.name"
                 >
@@ -57,10 +76,11 @@ import CrudContextMenu from '@/Elements/Crud/ContextMenu';
 import Form from '@/Components/Dashboard/Report/Form';
 import {useStore} from 'vuex';
 import Filters from '@/Elements/Filters';
+import Popper from 'vue3-popper';
 
 export default {
     name: 'DashboardReports',
-    components: {Filters, CrudContextMenu, VTable},
+    components: {Filters, CrudContextMenu, VTable, Popper},
     emits: ['reloadStatistic'],
     setup(props, { emit }) {
         const app = inject('app');
@@ -94,12 +114,13 @@ export default {
                     {
                         name: 'date',
                         sortable: true,
+                        overflow: true,
                     }, {
                         name: 'user',
-                        sortable: 'true',
+                        sortable: true,
                     }, {
                         name: 'shift',
-                        sortable: 'true',
+                        sortable: true,
                     }, {
                         name: 'events_count',
                         sortable: true,

@@ -12,7 +12,9 @@ class ReportFilter extends Filter
     protected array $filters = [
         'user_id' => 'required|array',
         'shift_id' => 'required|array',
-        'date' => 'required|array'
+        'date' => 'required|array',
+        'with_comment' => 'required',
+        'search' => 'required',
     ];
 
     /**
@@ -35,6 +37,17 @@ class ReportFilter extends Filter
         'total',
     ];
 
+    public function filterSearch(Builder $builder, string $search): Builder
+    {
+        return $builder->where(static function (Builder $builder) use ($search) {
+            $builder->whereHas('user', static function (Builder $builder) use ($search) {
+                return $builder->where('name', 'like', '%' . $search . '%');
+            })->orWhereHas('shift', static function (Builder $builder) use ($search) {
+                return $builder->where('title', 'like', '%' . $search . '%');
+            });
+        });
+    }
+
     /**
      * @param Builder $builder
      * @param array $value
@@ -43,6 +56,16 @@ class ReportFilter extends Filter
     public function filterDate(Builder $builder, array $value): Builder
     {
         return $this->applyDateFilter($builder, 'date', $value);
+    }
+
+    /**
+     * @param Builder $builder
+     * @param $value
+     * @return Builder
+     */
+    public function filterWithComment(Builder $builder, $value): Builder
+    {
+        return $builder->{$value ? 'whereNotNull' : 'whereNull'}('comment');
     }
 
     /**

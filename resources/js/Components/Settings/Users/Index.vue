@@ -10,9 +10,14 @@
             </VButton>
         </template>
         <div class="w-full bg-white rounded-md shadow-lg py-3">
+            <Filters v-model="selectedFilters.values"
+                     class="px-5"
+            />
+
             <VTable pagination="user/pagination"
                     :columns="columns"
                     url="/settings/user/pagination"
+                    :filters="selectedFilters.values"
                     basic
             >
                 <template #name="{data}">
@@ -41,14 +46,16 @@
 import Page from '@/Components/Layout/Page';
 import VTable from '@/Elements/Table';
 import VButton from '@/Elements/Button';
-import { inject} from 'vue';
+import {inject, reactive} from 'vue';
 import UserForm from '@/Components/Settings/Users/Form';
 import { useStore } from 'vuex';
 import CrudContextMenu from '@/Elements/Crud/ContextMenu';
+import Filters from '@/Elements/Filters';
 
 export default {
     name: 'Users',
     components: {
+        Filters,
         CrudContextMenu,
         VButton,
         VTable,
@@ -57,6 +64,7 @@ export default {
     setup(){
         const app = inject('app');
         const store = useStore();
+        const selectedFilters = reactive({ values: [] });
 
         function openForm(user) {
             app.modal({
@@ -68,15 +76,20 @@ export default {
         }
 
         return {
+            selectedFilters,
             columns: [
                 {
                     name: 'name',
+                    sortable: true,
                 },{
                     name: 'email',
+                    sortable: true,
                 }, {
                     name: 'user_group',
+                    sortable: true,
                 },{
-                    name: 'created_at'
+                    name: 'created_at',
+                    sortable: true,
                 }, {
                     name: 'actions',
                     titleDisabled: true,

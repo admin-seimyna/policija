@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\UserFilter;
 use App\Http\Requests\User\CreateRequest;
+use App\Http\Requests\User\ProfileRequest;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Response\Response;
 use App\Http\Response\User\CreateResponse;
@@ -11,6 +13,7 @@ use App\Models\UserGroup;
 use App\Repository\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -24,6 +27,7 @@ class UserController extends Controller
             ->permission('user.list')
             ->setRequest($request)
             ->setQuery(User::query())
+            ->setFilter(UserFilter::class)
             ->setRepository(UserRepository::class, 'pagination')
             ->setCommit('user/pagination')
             ->setPagination()
@@ -73,6 +77,24 @@ class UserController extends Controller
                 $user->update($request->getData());
                 return [
                     'user/updateInPagination' => $user->load(['userGroup:id,title'])->toArray()
+                ];
+            })
+            ->json();
+    }
+
+    /**
+     * @param ProfileRequest $request
+     * @return JsonResponse
+     */
+    public function profile(ProfileRequest $request): JsonResponse
+    {
+        return Response::create()
+            ->setRequest($request)
+            ->handle(function(Response $response) use ($request) {
+                $user = Auth::user();
+                $user->update($request->getData());
+                return [
+                    'auth/updateUser' => $user->toArray(),
                 ];
             })
             ->json();

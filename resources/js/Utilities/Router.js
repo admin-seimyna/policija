@@ -54,7 +54,7 @@ export default class Router {
                 return next({ name: 'dashboard' });
             }
         }
-        if(to.meta && to.meta.payload) {
+        if(user && to.meta && to.meta.payload) {
             axios.get(to.meta.payload).then(() => {
                 this.store.commit('app/loading', false);
             });

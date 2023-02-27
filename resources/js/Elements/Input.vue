@@ -6,7 +6,8 @@
         }"
     >
         <div class="input__wrapper">
-            <label :for="name"
+            <label v-if="!disableTitle"
+                   :for="name"
                    class="text-xs font-semibold mt-2 ml-3 text-text-light"
             >
                 {{ label }}

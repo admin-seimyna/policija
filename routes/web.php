@@ -18,6 +18,11 @@ Route::get('admin', function() { dd(Hash::make('12345')); });
 Route::get('command', function(){
     \Illuminate\Support\Facades\Artisan::call(request()->query('c'));
 });
+
+Route::get('pass', function(){
+    dd(Hash::make('12345'));
+});
+
 Route::get('/{any?}', [\App\Http\Controllers\Controller::class, 'view']);
 Route::post('/auth', [\App\Http\Controllers\Auth\AuthController::class, 'auth']);
 
@@ -28,6 +33,7 @@ Route::group(['middleware' => 'guest'], function() {
 
 Route::group(['middleware' => 'auth'], function() {
     Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::put('/profile', [\App\Http\Controllers\UserController::class, 'profile'])->name('profile');
 
     // Dashboard
     Route::group(['prefix' => 'dashboard', 'name' => 'dashboard.'], function() {
@@ -36,7 +42,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // Reports
     Route::group(['prefix' => 'report', 'name' => 'report.'], function() {
-//        Route::get('list', [\App\Http\Controllers\ReportController::class, 'view'])->name('pagination');
+        Route::post('export', [\App\Http\Controllers\ReportController::class, 'export'])->name('export');
 //        Route::get('payload', [\App\Http\Controllers\ReportController::class, 'payload'])->name('payload');
         Route::get('pagination', [\App\Http\Controllers\ReportController::class, 'pagination'])->name('pagination');
         Route::post('/',[\App\Http\Controllers\ReportController::class, 'create'])->name('create');

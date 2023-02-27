@@ -24,6 +24,9 @@ return [
         'shift' => 'Pamaina',
         'user' => 'Naudotojas',
         'password' => 'Slaptažodis',
+        'change_password' => 'Pakeisti slaptažodį',
+        'file_name' => 'Dokumento pavadinimas',
+        'with_comment' => 'Su komentaru',
         'role' => [
             'owner' => 'Suteikti naudotojui visas teises',
         ]

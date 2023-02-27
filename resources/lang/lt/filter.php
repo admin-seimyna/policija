@@ -7,6 +7,8 @@ return [
         'user_id' => 'Naudotojas',
         'shift_id' => 'Pamaina',
         'filters' => 'Filtrai',
+        'other' => 'Kita',
+        'with_comment' => 'Su komentaru',
     ],
 
     'button' => [

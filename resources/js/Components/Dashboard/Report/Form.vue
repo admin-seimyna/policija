@@ -7,6 +7,12 @@
         @close="emit('close')"
     >
         <template #default="{data,errors}">
+            <DatePicker
+                v-model="data.date"
+                name="date"
+                disable-time-select
+                default-is-today
+            />
 
             <div class="w-full flex mt-5">
                 <VSelect v-if="hasPermissionToCreatForUser"
@@ -62,12 +68,13 @@ import CrudForm from '@/Elements/Crud/From';
 import {useI18n} from 'vue-i18n';
 import VSelect from '@/Elements/VSelect';
 import {useStore} from 'vuex';
+import DatePicker from '@/Elements/DatePicker';
 import Counter from '@/Elements/Counter';
 import TipTapEditor from '@/Elements/TipTapEditor';
 
 export default {
     name: 'ReportForm',
-    components: {TipTapEditor, Counter, VSelect, CrudForm, VButton, VInput, VForm},
+    components: {TipTapEditor, Counter, DatePicker, VSelect, CrudForm, VButton, VInput, VForm},
     emits: ['close'],
     props: {
         report: Object,

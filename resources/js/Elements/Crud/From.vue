@@ -55,13 +55,14 @@ export default {
     props: {
         data: Object,
         action: String,
+        keepOriginalAction: Boolean,
         title: String,
     },
     setup(props, { emit }) {
         return {
             emit,
             action: computed(() => {
-                if (!props.data.id) return props.action;
+                if (!props.data.id || props.keepOriginalAction) return props.action;
                 return `${props.action}/${props.data.id}`;
             }),
 
