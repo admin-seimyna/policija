@@ -39,7 +39,6 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['prefix' => 'dashboard', 'name' => 'dashboard.'], function() {
         Route::get('payload', [\App\Http\Controllers\DashboardController::class, 'payload'])->name('payload');
     });
-
     // Reports
     Route::group(['prefix' => 'report', 'name' => 'report.'], function() {
         Route::post('export', [\App\Http\Controllers\ReportController::class, 'export'])->name('export');

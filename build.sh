@@ -33,7 +33,7 @@ sudo php artisan config:cache
 sudo php artisan migrate --force
 
 # build
-sudo php artisan build
+sudo php artisan app:build
 sudo php artisan optimize
 
 # Reload apache server
