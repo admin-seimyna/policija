@@ -13,7 +13,7 @@ createApp(App)
         config,
         constants,
         http: {
-            host: 'http://ataskaita.pvv.lt', // live
+            host: 'http://pvv.lt', // live
             // host: 'http://policija.test', // home
             // host: 'http://test.test', // work
         },
