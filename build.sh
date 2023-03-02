@@ -38,7 +38,7 @@ sudo php artisan optimize
 
 # Reload apache server
 sudo service nginx restart
-sudo sudo systemctl start php7.4-fpm
+sudo sudo systemctl start php8.0-fpm
 
 sudo rm "${BASEDIR}/build.zip"
 sudo rm "${BASEDIR}/build.sh"
