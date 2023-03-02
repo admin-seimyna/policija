@@ -36,10 +36,10 @@ jobs:
         shell: bash
 
         env:
-          SSH_PASS: ${{ secrets.STAGE_SSH_PASS }}
-          SSH_USER: ${{ secrets.STAGE_SSH_USER }}
-          SSH_SERVER: ${{ secrets.STAGE_SSH_SERVER }}
-          BUILD_DIRECTORY: ${{ secrets.STAGE_BUILD_DIRECTORY }}
+          SSH_PASS: ${{ secrets.SSH_PASS }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_SERVER: ${{ secrets.SSH_SERVER }}
+          BUILD_DIRECTORY: ${{ secrets.BUILD_DIRECTORY }}
 
         run: |
           export SSHPASS="$SSH_PASS"
