@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@tiptap/extension-placeholder": "^2.0.0-beta.212",
+    "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/starter-kit": "^2.0.0-beta.212",
     "@tiptap/vue-3": "^2.0.0-beta.212",
     "before-build-webpack": "^0.2.13",
