@@ -1,0 +1,49 @@
+name: Main
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Install composer Dependencies
+        run: composer install --optimize-autoloader --no-dev
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Compile assets
+        run: npm run development
+
+      - name: Zip package
+        run: zip -r stage_build.zip app bootstrap config database public resources mobile routes tests vendor artisan composer.json composer.lock server.php -q
+
+      - name: Upload and deploy package
+        shell: bash
+
+        env:
+          SSH_PASS: ${{ secrets.STAGE_SSH_PASS }}
+          SSH_USER: ${{ secrets.STAGE_SSH_USER }}
+          SSH_SERVER: ${{ secrets.STAGE_SSH_SERVER }}
+          BUILD_DIRECTORY: ${{ secrets.STAGE_BUILD_DIRECTORY }}
+
+        run: |
+          export SSHPASS="$SSH_PASS"
+          sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stage_build.zip "$SSH_USER"@"$SSH_SERVER":"$BUILD_DIRECTORY"
+          sshpass -e scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null stage_build.sh "$SSH_USER"@"$SSH_SERVER":"$BUILD_DIRECTORY"
+          sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SSH_USER"@"$SSH_SERVER" chmod 0755 "$BUILD_DIRECTORY"/stage_build.sh
+          sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$SSH_USER"@"$SSH_SERVER" "$BUILD_DIRECTORY"/stage_build.sh
