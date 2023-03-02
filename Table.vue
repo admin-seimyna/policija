@@ -4,9 +4,9 @@
             'table--basic': basic,
          }"
     >
-        <div class="flex pl-5 py-3 items-center">
+        <div class="flex items-center pl-5 py-3">
             <div v-if="loading"
-                 class="flex items-center ml-5"
+                 class="flex items-center"
             >
                 <VSpinner class="w-6 h-6" />
                 <span class="ml-3 text-primary-500 text-xs font-semibold">
@@ -23,12 +23,11 @@
                     {{ $t('common.button.export') }}
                 </span>
             </span>
-`
+
             <Pagination v-if="data.length"
                         v-model="page"
-                        :total="getter.total"
-                        :per-page="getter.per_page"
-                        class="ml-auto mr-5"
+                        :total="total"
+                        class="ml-auto"
                         @change="load"
             />
         </div>
@@ -107,9 +106,8 @@
         <div class="flex-center">
             <Pagination v-if="data.length"
                         v-model="page"
-                        :total="getter.total"
-                        :per-page="getter.per_page"
-                        class="ml-auto mr-5"
+                        :total="total"
+                        class="ml-auto"
                         @change="load"
             />
         </div>
@@ -121,7 +119,7 @@ import {computed, inject, onMounted, reactive, ref, watch} from 'vue';
 import axios from 'axios';
 import VSpinner from '@/Elements/Spinner';
 import {useStore} from 'vuex';
-import TableExport from '@/Elements/TableExport';
+import TableExport  from '@/Elements/TableExport';
 
 export default {
     name: 'VTable',
@@ -135,7 +133,6 @@ export default {
             type: String,
             required: true
         },
-        exportUrl: String,
         pagination: {
             type: String,
             required: true
@@ -143,6 +140,7 @@ export default {
         columns: Array,
         basic: Boolean,
         filters: Array,
+        exportUrl: String,
     },
     setup(props, { emit }) {
         const app = inject('app');
@@ -152,6 +150,8 @@ export default {
         const getter = computed(() => store.getters[props.pagination]);
         const sortable = reactive({});
 
+        watch(() => props.filters, load, {deep: true});
+
         function makeUrl(url) {
             if (!props.filters) return url;
             url += url.match(/[?]/) ? '&' : '?';
@@ -160,10 +160,7 @@ export default {
         }
 
         function load(emitCall = true) {
-            let url = `${props.url}?page=${page.value}`;
-            if (props.filters) {
-                url += `&filters=${JSON.stringify(props.filters)}&sort=${JSON.stringify(sortable)}`;
-            }
+            const url = makeUrl(`${props.url}?page=${page.value}`);
 
             if (emitCall) {
                 emit('load');
@@ -175,22 +172,17 @@ export default {
             });
         }
 
-        watch(
-            () => props.filters,
-            () => {
-                page.value = 1;
-                load();
-            }, {deep: true}
-        );
-
         onMounted(load);
 
         return {
             page,
             loading,
             sortable,
-            getter,
             data: computed(() => getter.value.data || []),
+            total: computed(() => {
+                const total = Math.ceil(getter.value.total / getter.value.per_page);
+                return total || 1;
+            }),
             load,
             exportData() {
                 app.modal({

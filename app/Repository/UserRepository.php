@@ -12,6 +12,12 @@ class UserRepository extends Repository
      */
     public function pagination(Builder $builder): Builder
     {
-        return $builder->with(['userGroup:id,title'])->latest();
+        return $builder->select([
+            'users.id',
+            'users.name',
+            'users.email',
+            'users.user_group_id',
+            'users.created_at'
+        ])->with(['userGroup:id,title'])->latest();
     }
 }

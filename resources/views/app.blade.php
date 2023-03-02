@@ -12,7 +12,7 @@
 </head>
 <body>
 <div id="app"></div>
-<script type="application/javascript" src="{{ asset('js/vendor.js') }}"></script>
-<script type="application/javascript" src="{{ asset('js/app.js') }}"></script>
+<script type="application/javascript" src="{{ asset('js/vendor.js') }}{{ '?v=' . config('app.version') }}"></script>
+<script type="application/javascript" src="{{ asset('js/app.js') }}{{ '?v=' . config('app.version') }}"></script>
 </body>
 </html>

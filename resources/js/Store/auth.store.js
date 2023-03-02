@@ -11,6 +11,9 @@ export default {
     },
 
     mutations: {
+        updateUser(state, data) {
+            state.user = Object.assign(state.user, data);
+        },
         user(state, user) {
             state.user = user;
         },

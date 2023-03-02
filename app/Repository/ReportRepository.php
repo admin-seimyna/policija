@@ -13,9 +13,9 @@ class ReportRepository extends Repository
     public function pagination(Builder $builder): Builder
     {
         return $builder->with([
-            'shift',
-            'user'
-        ])
+                'shift',
+                'user'
+            ])
             ->orderByDesc('date');
     }
 

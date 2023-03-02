@@ -12,14 +12,14 @@
             </div>
         </div>
         <div class="w-full mt-8">
-            <transition name="fade">
-                <div v-if="loading"
-                     class="absolute top-0 left-0 w-full h-full bg-gray-100 flex-center z-50"
-                >
+            <transition v-if="loading"
+                        name="fade"
+            >
+                <div class="absolute top-0 left-0 w-full h-full bg-gray-100 flex-center z-50">
                     <VSpinner class="w-10 h-10" />
                 </div>
             </transition>
-            <slot v-if="!loading" />
+            <slot />
         </div>
     </div>
 </template>

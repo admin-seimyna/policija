@@ -42,6 +42,13 @@
         >
             <i class="icon-step-forward mt-1" />
         </li>
+
+        <li>
+            {{ $t('common.title.total_records') }}.:
+            <span class="font-semibold">
+                {{ total }}
+            </span>
+        </li>
     </ul>
 </template>
 <script>
@@ -52,6 +59,7 @@ export default {
     props: {
         modelValue: [String, Number],
         total: [String, Number],
+        perPage: [String, Number],
         pages: {
             type: [String, Number],
             default: 5,
@@ -65,6 +73,10 @@ export default {
         const range = reactive([]);
         const total = computed(() => parseInt(props.total));
         const pagesToShow = parseInt(props.pages) - 1;
+        const totalPages = computed(() => {
+            const total = Math.ceil(props.total / props.perPage);
+            return total || 1;
+        });
 
         function generateRage() {
             if (range.length) {
@@ -82,12 +94,12 @@ export default {
             if (min < 1) {
                 min = 1;
                 max = min + pagesToShow;
-                max = max >= total ? total.value : max;
+                max = max >= total ? totalPages.value : max;
             }
 
-            if (max > total.value) {
-                max = total.value;
-                min = total.value - pagesToShow;
+            if (max > totalPages.value) {
+                max = totalPages.value;
+                min = totalPages.value - pagesToShow;
                 min = min < 1 ? 1 : min;
             }
 
@@ -103,6 +115,7 @@ export default {
 
         watch(() => props.modelValue, generateRage);
         watch(() => props.total, generateRage);
+        watch(() => props.perPage, generateRage);
 
         generateRage();
 
@@ -112,7 +125,7 @@ export default {
                 return props.modelValue === 1;
             }),
             isLastPage: computed(() => {
-                return props.modelValue === total.value;
+                return props.modelValue === totalPages.value;
             }),
             change(page) {
                 if (page === props.modelValue) return;
@@ -131,7 +144,7 @@ export default {
                 onChange(1);
             },
             last() {
-                onChange(total.value);
+                onChange(totalPages.value);
             }
         }
     }

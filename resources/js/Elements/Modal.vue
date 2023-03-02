@@ -12,14 +12,15 @@
                  :style="{
                      'transition-duration': transitionDuration
                  }"
-                 @click="closeOnOutside($event, index)"
+                 @click="closeOnOutside($event)"
             >
                 <div class="modal-content">
                     <component :is="modal.value.component"
                                ref="componentRef"
                                v-bind="modal.value.props"
-                               @close="close(index)"
-                               @true=onTrue(index)
+                               @close="close"
+                               @true=onTrue
+                               @update="update"
                     />
                 </div>
             </div>
@@ -44,6 +45,7 @@ export default {
         const modals = reactive([]);
         const componentRef = ref(null);
         const modalRef = ref(null);
+        const currentIndex = ref(0);
 
         function open(modal) {
             return new Promise((resolve, reject) => {
@@ -55,7 +57,9 @@ export default {
                 modal.value.options = Object.assign({
                     // options
                 },modal.value.options || {})
+                modal.value.props = ref(modal.value.props);
                 modals.push(modal);
+                currentIndex.value = modals.length - 1;
 
                 setTimeout(() => {
                     const index = modals.findIndex(modal => modal.value.id === id);
@@ -81,12 +85,14 @@ export default {
             });
         }
 
-        function close(index) {
+        function close() {
+            const index = currentIndex.value;
             const modal = modals[index];
             if (!modal) {
                 return;
             }
             modals[index].value.active = false;
+            currentIndex.value = modals.length ? modals.length - 1 : 0;
 
             setTimeout(() => {
                 if (typeof modal.value.onClose === 'function') {
@@ -97,8 +103,8 @@ export default {
         }
 
         function onTrue(index) {
-            modals[index].value.onTrue();
-            close(index);
+            modals[currentIndex.value].value.onTrue();
+            close();
         }
 
         app.register('modal', open).then((options) => {
@@ -131,6 +137,13 @@ export default {
                 if (modalRef.value[index] === e.target) {
                     close(index);
                 }
+            },
+
+            update(props) {
+                Object.keys(props).forEach((key) => {
+                    if (!modals[currentIndex.value].value.props[key]) return;
+                    modals[currentIndex.value].value.props[key] = props[key];
+                });
             }
         }
     }
