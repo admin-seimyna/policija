@@ -55,7 +55,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         // User groups
         Route::group(['prefix' => 'user-group', 'name' => 'user-group.'], function() {
-            Route::get('list', [\App\Http\Controllers\UserGroupController::class, 'view'])->name('pagination');
+            Route::get('list', [\App\Http\Controllers\UserGroupController::class, 'view'])->name('view');
             Route::get('payload', [\App\Http\Controllers\UserGroupController::class, 'payload'])->name('payload');
             Route::get('pagination', [\App\Http\Controllers\UserGroupController::class, 'pagination'])->name('pagination');
             Route::post('/',[\App\Http\Controllers\UserGroupController::class, 'create'])->name('create');
@@ -65,7 +65,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         // Users
         Route::group(['prefix' => 'user', 'name' => 'user.'], function() {
-            Route::get('list', [\App\Http\Controllers\UserController::class, 'view'])->name('pagination');
+            Route::get('list', [\App\Http\Controllers\UserController::class, 'view'])->name('view');
             Route::get('payload', [\App\Http\Controllers\UserController::class, 'payload'])->name('payload');
             Route::get('pagination', [\App\Http\Controllers\UserController::class, 'pagination'])->name('pagination');
             Route::post('/',[\App\Http\Controllers\UserController::class, 'create'])->name('create');
