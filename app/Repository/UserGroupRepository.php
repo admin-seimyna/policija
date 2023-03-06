@@ -10,7 +10,7 @@ class UserGroupRepository extends Repository
      * @param Builder $builder
      * @return Builder
      */
-    public function pagination(Builder $builder): Builder
+    public static function pagination(Builder $builder): Builder
     {
         return $builder->with('permissions')->latest();
     }
