@@ -11,8 +11,6 @@ class ReportObserver
      */
     protected $fields = [
         'processed_events_count',
-        'an_count',
-        'traffic_events_count',
         'unprocessed_events_count',
     ];
 
