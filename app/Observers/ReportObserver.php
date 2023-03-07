@@ -21,7 +21,7 @@ class ReportObserver
     {
         $report->total = 0;
         collect($this->fields)->each(static function ($fieldName) use ($report) {
-            $report->total += (int)$report->{$fieldName};
+            $report->total += (int)$report->{$fieldName} ?? 0;
         });
     }
 
@@ -32,7 +32,7 @@ class ReportObserver
     {
         $report->total = 0;
         collect($this->fields)->each(static function ($fieldName) use ($report) {
-            $report->total += (int)$report->{$fieldName};
+            $report->total += (int)$report->{$fieldName} ?? 0;
         });
     }
 }
