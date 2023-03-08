@@ -34,26 +34,6 @@ class Report extends Model
     {
         parent::boot();
         static::addGlobalScope(new UserReportScope());
-
-        static::creating(static function (Report $report) {
-            $report->total = 0;
-            collect([
-                'processed_events_count',
-                'unprocessed_events_count',
-            ])->each(static function ($fieldName) use ($report) {
-                $report->total += (int)$report->{$fieldName} ?? 0;
-            });
-        });
-
-        static::updating(static function (Report $report) {
-            $report->total = 0;
-            collect([
-                'processed_events_count',
-                'unprocessed_events_count',
-            ])->each(static function ($fieldName) use ($report) {
-                $report->total += (int)$report->{$fieldName} ?? 0;
-            });
-        });
     }
 
     /**
